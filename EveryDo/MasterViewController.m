@@ -13,6 +13,7 @@
 
 @interface MasterViewController () <UITableViewDelegate>
 
+@property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *swipeGestureRecognizer;
 
 @property NSMutableArray *objects;
 
@@ -101,6 +102,15 @@
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
+}
+
+#pragma mark -SwipeGestureRecognizer
+
+- (IBAction)swipeToSetAsCompleted:(UISwipeGestureRecognizer *)sender {
+    CGPoint point = [self.swipeGestureRecognizer locationInView:self.view];
+    TodoTableViewCell *swipedCell = [self.view hitTest:point withEvent:nil];
+    [swipedCell updateTodoCompletion:YES];
+
 }
 
 #pragma mark - TodoCreationProtocal

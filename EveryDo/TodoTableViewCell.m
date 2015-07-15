@@ -8,9 +8,10 @@
 
 #import "TodoTableViewCell.h"
 
-@interface TodoTableViewCell ()
+@interface TodoTableViewCell () 
 
 @property (weak, nonatomic) IBOutlet UILabel *todoTitle;
+
 @property (nonatomic) IBOutlet UILabel *todoDescription;
 
 @property (weak, nonatomic) IBOutlet UILabel *todoPriority;
@@ -19,15 +20,6 @@
 
 
 @implementation TodoTableViewCell
-
-- (void)setTitle:(NSString *)aTitle {
-    self.todoTitle.text = aTitle;
-}
-
-
-- (void)setDescription:(NSString *)aDescription {
-    self.todoDescription.text = aDescription;
-}
 
 - (void)setATodo:(Todo *)aTodo{
     _aTodo = aTodo;
@@ -48,6 +40,10 @@
     }
 }
 
+- (void)updateTodoCompletion:(BOOL)isCompleted {
+    self.aTodo.isCompleted = YES;
+    [self setContent];
+}
 
 
 @end

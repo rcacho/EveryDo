@@ -13,13 +13,6 @@
 
 @property (weak, nonatomic) Todo *aTodo;
 
-
-- (void)setTitle:(NSString *)aTitle;
-
-- (void)setDescription:(NSString *)aDescription;
-
-- (void)setContent:(Todo *)aTodo;
-
-- (void)setContent;
+- (void)updateTodoCompletion:(BOOL)isCompleted;
 
 @end
