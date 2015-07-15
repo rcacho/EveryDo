@@ -32,12 +32,14 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
-    Todo *todo1 = [[Todo alloc] initWithTitle:@"Groceries" andDescription:@"Buy Groceries: this is really long as to test out that the descriptions are being limited to one. I am usure of how long this should be so I am still writing." andPriority:@4];
-    Todo *todo2 = [[Todo alloc] initWithTitle:@"Gym" andDescription:@"Go To Gym" andPriority:@3];
-    Todo *todo3 = [[Todo alloc] initWithTitle:@"Dry Cleaning" andDescription:@"leave stuff at dry cleaners" andPriority:@5];
-    Todo *todo4 = [[Todo alloc] initWithTitle:@"Walk Dog" andDescription:@"Walk The Dog" andPriority:@6];
-    Todo *todo5 = [[Todo alloc] initWithTitle:@"Eat Dinner" andDescription:@"Eat Dinner" andPriority:@2];
-    Todo *todo6 = [[Todo alloc] initWithTitle:@"Phone Call" andDescription:@"Make Phone Call" andPriority:@1];
+    Todo *todo1 = [[Todo alloc] initWithTitle:@"Groceries" andDescription:@"Buy Groceries: this is really long as to test out that the descriptions are being limited to one. I am usure of how long this should be so I am still writing." andPriority:@4 andDeadline:nil];
+    Todo *todo2 = [[Todo alloc] initWithTitle:@"Gym" andDescription:@"Go To Gym" andPriority:@3 andDeadline:nil];
+    Todo *todo3 = [[Todo alloc] initWithTitle:@"Dry Cleaning" andDescription:@"leave stuff at dry cleaners" andPriority:@5 andDeadline:nil];
+    Todo *todo4 = [[Todo alloc] initWithTitle:@"Walk Dog" andDescription:@"Walk The Dog" andPriority:@6 andDeadline:nil];
+    Todo *todo5 = [[Todo alloc] initWithTitle:@"Eat Dinner" andDescription:@"Eat Dinner" andPriority:@2 andDeadline:nil];
+    Todo *todo6 = [[Todo alloc] initWithTitle:@"Phone Call" andDescription:@"Make Phone Call"
+                                  andPriority:@1 andDeadline:nil];
+    
     [todo6 setIsCompleted:YES];
     
     NSMutableArray *objects = [[NSMutableArray alloc] initWithArray:@[todo1,todo2,todo3,todo4,todo5,todo6]];

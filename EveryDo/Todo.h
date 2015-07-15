@@ -16,8 +16,10 @@
 
 @property NSNumber *priority;
 
+@property NSDate *deadline;
+
 @property BOOL isCompleted;
 
-- (instancetype)initWithTitle:(NSString *)title andDescription:(NSString *)todoDescription andPriority:(NSNumber *)priority;
+- (instancetype)initWithTitle:(NSString *)title andDescription:(NSString *)todoDescription andPriority:(NSNumber *)priority andDeadline:(NSDate *)deadline;
 
 @end

@@ -11,12 +11,13 @@
 @implementation Todo
 
 
-- (instancetype)initWithTitle:(NSString *)title andDescription:(NSString *)todoDescription andPriority:(NSNumber *)priority {
+- (instancetype)initWithTitle:(NSString *)title andDescription:(NSString *)todoDescription andPriority:(NSNumber *)priority andDeadline:(NSDate *)deadline{
     self = [super init];
     if (self) {
         _title = title;
         _todoDescription = todoDescription;
         _priority = priority;
+        _deadline = deadline;
     }
     return self;
 }

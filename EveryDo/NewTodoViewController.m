@@ -22,6 +22,7 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *todoDescriptionTextField;
 
+@property (weak, nonatomic) IBOutlet UIDatePicker *todoDeadlinePicker;
 
 @end
 
@@ -63,7 +64,7 @@
 
 - (IBAction)createNewTodo:(UIButton *)sender {
     if ([self validateFields]) {
-        Todo *newTodo = [[Todo alloc] initWithTitle:self.todoTitle andDescription:self.todoDescription andPriority:self.todoPriority];
+        Todo *newTodo = [[Todo alloc] initWithTitle:self.todoTitle andDescription:self.todoDescription andPriority:self.todoPriority andDeadline:self.todoDeadlinePicker.date];
         [self.todoDelegate transferTodo:newTodo];
         [self.navigationController popToRootViewControllerAnimated:NO];
     }

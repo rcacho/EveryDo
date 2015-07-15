@@ -9,8 +9,11 @@
 #import "DetailViewController.h"
 
 @interface DetailViewController ()
+
 @property (weak, nonatomic) IBOutlet UILabel *todoPriorityLabel;
+
 @property (weak, nonatomic) IBOutlet UILabel *todoTitleLabel;
+
 @property (weak, nonatomic) IBOutlet UILabel *todoDescriptionLabel;
 
 @end
