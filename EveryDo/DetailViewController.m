@@ -9,6 +9,9 @@
 #import "DetailViewController.h"
 
 @interface DetailViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *todoPriorityLabel;
+@property (weak, nonatomic) IBOutlet UILabel *todoTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *todoDescriptionLabel;
 
 @end
 
@@ -28,7 +31,17 @@
 - (void)configureView {
     // Update the user interface for the detail item.
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = [self.detailItem description];
+        self.todoPriorityLabel.text = [NSString stringWithFormat:@"%ld",[self.detailItem.priority integerValue]];
+        self.todoTitleLabel.text = self.detailItem.title;
+        if (self.detailItem.isCompleted) {
+            NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:(self.detailItem.todoDescription)];
+            [attributeString addAttribute:NSStrikethroughStyleAttributeName
+                                    value:@2
+                                    range:NSMakeRange(0, [attributeString length])];
+            self.todoDescriptionLabel.attributedText = attributeString;
+        } else {
+            self.todoDescriptionLabel.text = self.detailItem.todoDescription;
+        }
     }
 }
 
