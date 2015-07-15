@@ -16,6 +16,8 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *todoDescriptionLabel;
 
+@property (weak, nonatomic) IBOutlet UILabel *todoDate;
+
 @end
 
 @implementation DetailViewController
@@ -36,6 +38,9 @@
     if (self.detailItem) {
         self.todoPriorityLabel.text = [NSString stringWithFormat:@"%ld",[self.detailItem.priority integerValue]];
         self.todoTitleLabel.text = self.detailItem.title;
+        self.todoDate.text = [NSDateFormatter localizedStringFromDate:self.detailItem.deadline
+                                                            dateStyle:NSDateFormatterShortStyle
+                                                            timeStyle:NSDateFormatterShortStyle];
         if (self.detailItem.isCompleted) {
             NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:(self.detailItem.todoDescription)];
             [attributeString addAttribute:NSStrikethroughStyleAttributeName

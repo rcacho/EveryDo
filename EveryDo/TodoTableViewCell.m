@@ -16,6 +16,8 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *todoPriority;
 
+@property (weak, nonatomic) IBOutlet UILabel *todoDate;
+
 @end
 
 
@@ -29,6 +31,9 @@
 - (void)setContent {
     self.todoTitle.text = self.aTodo.title;
     self.todoPriority.text = [NSString stringWithFormat:@"%ld",(long)[self.aTodo.priority integerValue]];
+    self.todoDate.text = [NSDateFormatter localizedStringFromDate:self.aTodo.deadline
+                                                        dateStyle:NSDateFormatterShortStyle
+                                                        timeStyle:NSDateFormatterShortStyle];
     if (self.aTodo.isCompleted) {
         NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:(self.aTodo.todoDescription)];
         [attributeString addAttribute:NSStrikethroughStyleAttributeName

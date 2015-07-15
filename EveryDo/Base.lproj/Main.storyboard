@@ -124,6 +124,7 @@
                                 </tableViewCellContentView>
                                 <gestureRecognizers/>
                                 <connections>
+                                    <outlet property="todoDate" destination="QL7-7K-Cbh" id="UGD-1l-xaI"/>
                                     <outlet property="todoDescription" destination="0Zo-z0-mgN" id="EHv-hV-g07"/>
                                     <outlet property="todoPriority" destination="lrG-lb-X8E" id="tg6-KF-lCL"/>
                                     <outlet property="todoTitle" destination="c5R-wD-sdQ" id="4TV-IY-AqG"/>
@@ -310,13 +311,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JcN-ga-68y">
-                                <rect key="frame" x="284" y="149" width="33" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Priority" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uRq-TB-8hq">
-                                <rect key="frame" x="46" y="50" width="55" height="21"/>
+                                <rect key="frame" x="284" y="110" width="33" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -327,19 +322,42 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Priority" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uRq-TB-8hq">
+                                <rect key="frame" x="36" y="84" width="55" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wdd-HL-LTT">
+                                <rect key="frame" x="489" y="115" width="36" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="JcN-ga-68y" secondAttribute="centerY" constant="141" id="NsT-tg-AhU"/>
+                            <constraint firstItem="uRq-TB-8hq" firstAttribute="top" secondItem="cIm-e0-J51" secondAttribute="bottom" constant="20" id="b3b-mf-IOa"/>
                             <constraint firstAttribute="centerX" secondItem="JcN-ga-68y" secondAttribute="centerX" id="bTS-RN-Ker"/>
                             <constraint firstAttribute="centerY" secondItem="rBw-NN-y6C" secondAttribute="centerY" constant="0.5" id="cud-5M-iMn"/>
                             <constraint firstItem="uRq-TB-8hq" firstAttribute="top" secondItem="cIm-e0-J51" secondAttribute="bottom" constant="30" id="fJH-6B-INm"/>
                             <constraint firstItem="uRq-TB-8hq" firstAttribute="leading" secondItem="MMQ-IT-qOo" secondAttribute="leadingMargin" constant="30" id="kq6-t3-EW5"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Wdd-HL-LTT" secondAttribute="trailing" constant="20" id="lKe-EX-vgu"/>
+                            <constraint firstItem="Wdd-HL-LTT" firstAttribute="top" secondItem="cIm-e0-J51" secondAttribute="bottom" constant="20" id="mbU-Fu-0Rn"/>
+                            <constraint firstItem="JcN-ga-68y" firstAttribute="top" secondItem="uRq-TB-8hq" secondAttribute="bottom" constant="5" id="nby-72-Yi2"/>
+                            <constraint firstItem="uRq-TB-8hq" firstAttribute="leading" secondItem="MMQ-IT-qOo" secondAttribute="leadingMargin" constant="20" id="pvB-T1-3er"/>
                             <constraint firstAttribute="centerX" secondItem="rBw-NN-y6C" secondAttribute="centerX" id="qFq-eL-IKB"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="fJH-6B-INm"/>
+                                <exclude reference="kq6-t3-EW5"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Detail" id="cra-N8-TIN"/>
                     <connections>
+                        <outlet property="todoDate" destination="Wdd-HL-LTT" id="0s7-v7-Rla"/>
                         <outlet property="todoDescriptionLabel" destination="rBw-NN-y6C" id="i88-Mc-vyb"/>
                         <outlet property="todoPriorityLabel" destination="uRq-TB-8hq" id="brW-CC-pGM"/>
                         <outlet property="todoTitleLabel" destination="JcN-ga-68y" id="v91-9T-djP"/>
