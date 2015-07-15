@@ -104,6 +104,18 @@
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+    
+    Todo *todoToMove = [self.objects objectAtIndex:sourceIndexPath.row];
+    [self.objects removeObjectAtIndex:sourceIndexPath.row];
+    [self.objects insertObject:todoToMove atIndex:destinationIndexPath.row];
+}
+
+
 #pragma mark -SwipeGestureRecognizer
 
 - (IBAction)swipeToSetAsCompleted:(UISwipeGestureRecognizer *)sender {
