@@ -20,4 +20,6 @@
 
 - (void)setContent:(Todo *)aTodo;
 
+- (void)setContent;
+
 @end

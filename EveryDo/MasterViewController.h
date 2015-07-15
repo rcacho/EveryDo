@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NewTodoViewController.h"
 
-@interface MasterViewController : UITableViewController
+
+@interface MasterViewController : UITableViewController <TodoCreationProtocol>
 
 
 @end

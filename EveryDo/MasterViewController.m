@@ -54,9 +54,7 @@
     if (!self.objects) {
         self.objects = [[NSMutableArray alloc] init];
     }
-    [self.objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self performSegueWithIdentifier:@"createNewTodo" sender:self];
 }
 
 #pragma mark - Segues
@@ -66,6 +64,8 @@
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         Todo *object = self.objects[indexPath.row];
         [[segue destinationViewController] setDetailItem:object];
+    } else if ([[segue identifier] isEqualToString:@"createNewTodo"]) {
+        [[segue destinationViewController] setTodoDelegate:self];
     }
 }
 
@@ -81,9 +81,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TodoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    Todo *object = self.objects[indexPath.row];
-    [cell setContent:object];
+    [cell setATodo:self.objects[indexPath.row]];
     return cell;
 }
 
@@ -103,6 +101,15 @@
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
+}
+
+#pragma mark - TodoCreationProtocal
+
+- (void)transferTodo:(Todo *)aTodo {
+    [self.objects insertObject:aTodo atIndex:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+
 }
 
 @end

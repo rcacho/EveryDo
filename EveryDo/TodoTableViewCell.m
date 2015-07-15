@@ -29,19 +29,25 @@
     self.todoDescription.text = aDescription;
 }
 
-- (void)setContent:(Todo *)aTodo {
-    self.todoTitle.text = aTodo.title;
-    self.todoPriority.text = [NSString stringWithFormat:@"%ld",(long)[aTodo.priority integerValue]];
-    if (aTodo.isCompleted) {
-        NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:(aTodo.todoDescription)];
+- (void)setATodo:(Todo *)aTodo{
+    _aTodo = aTodo;
+    [self setContent];
+}
+
+- (void)setContent {
+    self.todoTitle.text = self.aTodo.title;
+    self.todoPriority.text = [NSString stringWithFormat:@"%ld",(long)[self.aTodo.priority integerValue]];
+    if (self.aTodo.isCompleted) {
+        NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:(self.aTodo.todoDescription)];
         [attributeString addAttribute:NSStrikethroughStyleAttributeName
                                 value:@2
                                 range:NSMakeRange(0, [attributeString length])];
         self.todoDescription.attributedText = attributeString;
     } else {
-        self.todoDescription.text = aTodo.todoDescription;
+        self.todoDescription.text = self.aTodo.todoDescription;
     }
 }
+
 
 
 @end
