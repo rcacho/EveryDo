@@ -15,7 +15,13 @@
 
 @property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *swipeGestureRecognizer;
 
-@property NSMutableArray *objects;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *todoOrderSegmentedControl;
+
+@property NSMutableArray *outstandingItems;
+
+@property NSMutableArray *completedItems;
+
+
 
 @end
 
@@ -44,7 +50,7 @@
     
     NSMutableArray *objects = [[NSMutableArray alloc] initWithArray:@[todo1,todo2,todo3,todo4,todo5,todo6]];
     
-    self.objects = objects;
+    self.outstandingItems = objects;
     
 }
 
@@ -54,8 +60,8 @@
 }
 
 - (void)insertNewObject:(id)sender {
-    if (!self.objects) {
-        self.objects = [[NSMutableArray alloc] init];
+    if (!self.outstandingItems) {
+        self.outstandingItems = [[NSMutableArray alloc] init];
     }
     [self performSegueWithIdentifier:@"createNewTodo" sender:self];
 }
@@ -65,7 +71,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Todo *object = self.objects[indexPath.row];
+        Todo *object = self.outstandingItems[indexPath.row];
         [[segue destinationViewController] setDetailItem:object];
     } else if ([[segue identifier] isEqualToString:@"createNewTodo"]) {
         [[segue destinationViewController] setTodoDelegate:self];
@@ -75,17 +81,36 @@
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.objects.count;
+    if (section == 0) {
+        return self.outstandingItems.count;
+    }
+    return self.completedItems.count;
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return @"Outstanding Tasks";
+    }
+
+        return @"Completed Tasks";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TodoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    [cell setATodo:self.objects[indexPath.row]];
-    return cell;
+    
+    if (indexPath.section == 0) {
+        [cell setATodo:self.outstandingItems[indexPath.row]];
+        return cell;
+    } else {
+        [cell setATodo:self.completedItems[indexPath.row]];
+        return cell;
+    }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -99,7 +124,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.objects removeObjectAtIndex:indexPath.row];
+        [self.outstandingItems removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
@@ -112,25 +137,60 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     
-    Todo *todoToMove = [self.objects objectAtIndex:sourceIndexPath.row];
-    [self.objects removeObjectAtIndex:sourceIndexPath.row];
-    [self.objects insertObject:todoToMove atIndex:destinationIndexPath.row];
+    Todo *todoToMove = [self.outstandingItems objectAtIndex:sourceIndexPath.row];
+    [self.outstandingItems removeObjectAtIndex:sourceIndexPath.row];
+    [self.outstandingItems insertObject:todoToMove atIndex:destinationIndexPath.row];
 }
 
 
-#pragma mark -SwipeGestureRecognizer
+#pragma mark - SwipeGestureRecognizer
 
 - (IBAction)swipeToSetAsCompleted:(UISwipeGestureRecognizer *)sender {
     CGPoint point = [self.swipeGestureRecognizer locationInView:self.view];
     TodoTableViewCell *swipedCell = [self.view hitTest:point withEvent:nil];
+    [self.outstandingItems removeObjectIdenticalTo:swipedCell.aTodo inRange:NSMakeRange(0, self.outstandingItems.count)];
+    [self.completedItems insertObject:swipedCell.aTodo atIndex:0];
     [swipedCell updateTodoCompletion:YES];
-
 }
+
+
+#pragma mark - Segmented Control
+
+- (IBAction)orderAccordingToControl:(UISegmentedControl *)sender {
+    if (sender.selectedSegmentIndex == 0) {
+        [self orderByPriority];
+    } else if (sender.selectedSegmentIndex == 1) {
+        [self orderByDeadline];
+    }
+}
+
+- (void)orderByPriority {
+    NSArray *sortedArray1 = [self.outstandingItems sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
+        NSComparisonResult result = todo1.priority > todo2.priority;
+        return result;
+    }];
+    
+    self.outstandingItems = [[NSMutableArray alloc] initWithArray:sortedArray1];
+    
+    [self.tableView reloadData];
+}
+
+- (void)orderByDeadline {
+    NSArray *sortedArray1 = [self.outstandingItems sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
+        NSComparisonResult result = todo1.deadline > todo2.deadline;
+        return result;
+    }];
+    
+    self.outstandingItems = [[NSMutableArray alloc] initWithArray:sortedArray1];
+    
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - TodoCreationProtocal
 
 - (void)transferTodo:(Todo *)aTodo {
-    [self.objects insertObject:aTodo atIndex:0];
+    [self.outstandingItems insertObject:aTodo atIndex:0];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 

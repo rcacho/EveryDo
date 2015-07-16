@@ -137,15 +137,29 @@
                             <outlet property="delegate" destination="pGg-6v-bdr" id="Y6K-Cp-Qkv"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Master" id="tQt-TN-PWz"/>
+                    <navigationItem key="navigationItem" id="tQt-TN-PWz">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="FKw-v1-WbA">
+                            <rect key="frame" x="229" y="7" width="143" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Prority"/>
+                                <segment title="DeadLine"/>
+                            </segments>
+                            <connections>
+                                <action selector="orderAccordingToControl:" destination="pGg-6v-bdr" eventType="valueChanged" id="gce-I0-IZk"/>
+                            </connections>
+                        </segmentedControl>
+                    </navigationItem>
                     <connections>
                         <outlet property="swipeGestureRecognizer" destination="tzx-Dr-oAO" id="KjW-f7-rxW"/>
+                        <outlet property="todoOrderSegmentedControl" destination="FKw-v1-WbA" id="56W-MV-VQC"/>
                         <segue destination="Ah7-4n-0Wa" kind="show" identifier="showDetail" id="Cln-Sk-VfZ"/>
                         <segue destination="Ahc-Pc-HX1" kind="show" identifier="createNewTodo" id="ZUa-v7-6vL"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Cn-md-YlS" sceneMemberID="firstResponder"/>
-                <swipeGestureRecognizer direction="right" numberOfTouchesRequired="2" id="tzx-Dr-oAO">
+                <swipeGestureRecognizer direction="right" id="tzx-Dr-oAO">
                     <connections>
                         <action selector="swipeToSetAsCompleted:" destination="pGg-6v-bdr" id="Cvl-bg-6eN"/>
                         <outlet property="delegate" destination="pGg-6v-bdr" id="MBx-WW-vgI"/>
@@ -316,7 +330,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rBw-NN-y6C">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rBw-NN-y6C">
                                 <rect key="frame" x="256" y="289" width="88" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -337,6 +351,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="rBw-NN-y6C" secondAttribute="trailing" constant="20" id="Ka4-CJ-lIl"/>
+                            <constraint firstItem="rBw-NN-y6C" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="MMQ-IT-qOo" secondAttribute="leadingMargin" constant="20" id="WTd-aj-ocN"/>
                             <constraint firstItem="uRq-TB-8hq" firstAttribute="top" secondItem="cIm-e0-J51" secondAttribute="bottom" constant="20" id="b3b-mf-IOa"/>
                             <constraint firstAttribute="centerX" secondItem="JcN-ga-68y" secondAttribute="centerX" id="bTS-RN-Ker"/>
                             <constraint firstAttribute="centerY" secondItem="rBw-NN-y6C" secondAttribute="centerY" constant="0.5" id="cud-5M-iMn"/>
