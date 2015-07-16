@@ -46,12 +46,12 @@
     Todo *todo6 = [[Todo alloc] initWithTitle:@"Phone Call" andDescription:@"Make Phone Call"
                                   andPriority:@1 andDeadline:nil];
     
-    [todo6 setIsCompleted:YES];
     
     NSMutableArray *objects = [[NSMutableArray alloc] initWithArray:@[todo1,todo2,todo3,todo4,todo5,todo6]];
     
     self.outstandingItems = objects;
     
+    self.completedItems = [[NSMutableArray alloc] init];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -147,10 +147,13 @@
 
 - (IBAction)swipeToSetAsCompleted:(UISwipeGestureRecognizer *)sender {
     CGPoint point = [self.swipeGestureRecognizer locationInView:self.view];
-    TodoTableViewCell *swipedCell = [self.view hitTest:point withEvent:nil];
-    [self.outstandingItems removeObjectIdenticalTo:swipedCell.aTodo inRange:NSMakeRange(0, self.outstandingItems.count)];
-    [self.completedItems insertObject:swipedCell.aTodo atIndex:0];
-    [swipedCell updateTodoCompletion:YES];
+    NSIndexPath *index = [self.tableView indexPathForRowAtPoint:point];
+    Todo *aTodo = [self.outstandingItems objectAtIndex:index.row];
+    [self.outstandingItems removeObjectAtIndex:index.row];
+    [self.completedItems insertObject:aTodo atIndex:0];
+    [aTodo setIsCompleted:YES];
+    [self.tableView reloadData];
+    
 }
 
 

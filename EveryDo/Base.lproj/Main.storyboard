@@ -29,6 +29,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="Cbj-57-FKt" customClass="TodoTableViewCell">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
@@ -135,6 +136,10 @@
                         <connections>
                             <outlet property="dataSource" destination="pGg-6v-bdr" id="P41-gY-KXY"/>
                             <outlet property="delegate" destination="pGg-6v-bdr" id="Y6K-Cp-Qkv"/>
+                            <outletCollection property="gestureRecognizers" destination="tzx-Dr-oAO" appends="YES" id="lT2-Mm-yDk"/>
+                            <outletCollection property="gestureRecognizers" destination="tzx-Dr-oAO" appends="YES" id="1qe-D1-uf2"/>
+                            <outletCollection property="gestureRecognizers" destination="tzx-Dr-oAO" appends="YES" id="AeZ-S8-nFk"/>
+                            <outletCollection property="gestureRecognizers" destination="tzx-Dr-oAO" appends="YES" id="MAE-zv-s0o"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="tQt-TN-PWz">
