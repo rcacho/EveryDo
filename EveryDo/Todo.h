@@ -1,25 +1,27 @@
 //
 //  Todo.h
-//  EveryDo
+//  
 //
-//  Created by ricardo antonio cacho on 2015-07-15.
-//  Copyright (c) 2015 ricardo antonio cacho. All rights reserved.
+//  Created by ricardo antonio cacho on 2015-07-20.
+//
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
-@interface Todo : NSObject
 
-@property NSString *title;
+@interface Todo : NSManagedObject
 
-@property NSString *todoDescription;
+@property (nonatomic, retain) NSString * title;
 
-@property NSNumber *priority;
+@property (nonatomic, retain) NSString * todoDescription;
 
-@property NSDate *deadline;
+@property (nonatomic) int16_t priority;
 
-@property BOOL isCompleted;
+@property (nonatomic) NSTimeInterval deadline;
 
-- (instancetype)initWithTitle:(NSString *)title andDescription:(NSString *)todoDescription andPriority:(NSNumber *)priority andDeadline:(NSDate *)deadline;
+@property (nonatomic) BOOL completed;
+
+@property (nonatomic, readonly) NSString *sectionName;
 
 @end

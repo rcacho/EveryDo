@@ -62,13 +62,26 @@
 
 #pragma mark Buttons
 
+- (void)insertNewTodoEntry {
+    CoreDataStack *aCoreDataStack = [CoreDataStack defaultStack];
+    Todo *aTodo = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:
+                         aCoreDataStack.managedObjectContext];
+    aTodo.title = self.todoTitleTextField.text;
+    aTodo.todoDescription = self.todoDescriptionTextField.text;
+    aTodo.priority = [self.todoPriorityTextField.text intValue];
+    aTodo.deadline = [self.todoDeadlinePicker.date timeIntervalSince1970];
+    aTodo.completed = NO;
+    NSError *error = nil;
+  
+    [aTodo.managedObjectContext save:&error];
+
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
 - (IBAction)createNewTodo:(UIButton *)sender {
     if ([self validateFields]) {
-        Todo *newTodo = [[Todo alloc] initWithTitle:self.todoTitle andDescription:self.todoDescription andPriority:self.todoPriority andDeadline:self.todoDeadlinePicker.date];
-        [self.todoDelegate transferTodo:newTodo];
-        [self.navigationController popToRootViewControllerAnimated:NO];
+        [self insertNewTodoEntry];
     }
-    
 }
 
 - (BOOL)validateFields {

@@ -11,21 +11,21 @@
 #import "Todo.h"
 #import "TodoTableViewCell.h"
 
-@interface MasterViewController () <UITableViewDelegate>
+@interface MasterViewController () <UITableViewDelegate, NSFetchedResultsControllerDelegate>
+
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
 @property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *swipeGestureRecognizer;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *todoOrderSegmentedControl;
 
-@property NSMutableArray *outstandingItems;
-
-@property NSMutableArray *completedItems;
-
+@property Todo *selectedTodo;
 
 
 @end
 
 @implementation MasterViewController
+
 - (void)awakeFromNib {
     [super awakeFromNib];
 }
@@ -38,20 +38,7 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
-    Todo *todo1 = [[Todo alloc] initWithTitle:@"Groceries" andDescription:@"Buy Groceries: this is really long as to test out that the descriptions are being limited to one. I am usure of how long this should be so I am still writing." andPriority:@4 andDeadline:nil];
-    Todo *todo2 = [[Todo alloc] initWithTitle:@"Gym" andDescription:@"Go To Gym" andPriority:@3 andDeadline:nil];
-    Todo *todo3 = [[Todo alloc] initWithTitle:@"Dry Cleaning" andDescription:@"leave stuff at dry cleaners" andPriority:@5 andDeadline:nil];
-    Todo *todo4 = [[Todo alloc] initWithTitle:@"Walk Dog" andDescription:@"Walk The Dog" andPriority:@6 andDeadline:nil];
-    Todo *todo5 = [[Todo alloc] initWithTitle:@"Eat Dinner" andDescription:@"Eat Dinner" andPriority:@2 andDeadline:nil];
-    Todo *todo6 = [[Todo alloc] initWithTitle:@"Phone Call" andDescription:@"Make Phone Call"
-                                  andPriority:@1 andDeadline:nil];
-    
-    
-    NSMutableArray *objects = [[NSMutableArray alloc] initWithArray:@[todo1,todo2,todo3,todo4,todo5,todo6]];
-    
-    self.outstandingItems = objects;
-    
-    self.completedItems = [[NSMutableArray alloc] init];
+      [self.fetchedResultsController performFetch:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,9 +47,6 @@
 }
 
 - (void)insertNewObject:(id)sender {
-    if (!self.outstandingItems) {
-        self.outstandingItems = [[NSMutableArray alloc] init];
-    }
     [self performSegueWithIdentifier:@"createNewTodo" sender:self];
 }
 
@@ -70,64 +54,54 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Todo *object = self.outstandingItems[indexPath.row];
-        [[segue destinationViewController] setDetailItem:object];
-    } else if ([[segue identifier] isEqualToString:@"createNewTodo"]) {
-        [[segue destinationViewController] setTodoDelegate:self];
+        [[segue destinationViewController] setDetailItem:self.selectedTodo];
     }
 }
 
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return self.fetchedResultsController.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        return self.outstandingItems.count;
-    }
-    return self.completedItems.count;
-    
+    return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if (section == 0) {
-        return @"Outstanding Tasks";
-    }
-
-        return @"Completed Tasks";
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [self.fetchedResultsController.sections[section] name];
 }
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+        return [self.fetchedResultsController sectionIndexTitles];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
+}
+
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    TodoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    
-    if (indexPath.section == 0) {
-        [cell setATodo:self.outstandingItems[indexPath.row]];
-        return cell;
-    } else {
-        [cell setATodo:self.completedItems[indexPath.row]];
-        return cell;
-    }
+    TodoTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"TodoCell"];
+    [cell setATodo:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+    return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.selectedTodo = [self.fetchedResultsController objectAtIndexPath:indexPath];
      [self performSegueWithIdentifier:@"showDetail" sender:self];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.outstandingItems removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+
     }
 }
 
@@ -136,67 +110,98 @@
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
-    
-    Todo *todoToMove = [self.outstandingItems objectAtIndex:sourceIndexPath.row];
-    [self.outstandingItems removeObjectAtIndex:sourceIndexPath.row];
-    [self.outstandingItems insertObject:todoToMove atIndex:destinationIndexPath.row];
+
 }
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView beginUpdates];
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView endUpdates];
+}
+
+#pragma mark - CoreData
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    CoreDataStack *theCoreDateStack = [CoreDataStack defaultStack];
+    NSFetchRequest *fetchRequest = [self entryListFetchRequest];
+    
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:theCoreDateStack.managedObjectContext sectionNameKeyPath:@"completed" cacheName:@"Todo"];
+    _fetchedResultsController.delegate = self;
+    
+    return _fetchedResultsController;
+}
+
+- (NSFetchRequest *)entryListFetchRequest {
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Todo"];
+    // note that we have to do something about the fact that the user can chage the orde of the tasks
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"completed" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]];
+    return fetchRequest;
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+        case NSFetchedResultsChangeMove:
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation: UITableViewRowAnimationAutomatic];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+        case NSFetchedResultsChangeMove:
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+    }
+}
+
 
 
 #pragma mark - SwipeGestureRecognizer
 
 - (IBAction)swipeToSetAsCompleted:(UISwipeGestureRecognizer *)sender {
+    CoreDataStack *theCoreDataStack = [CoreDataStack defaultStack];
     CGPoint point = [self.swipeGestureRecognizer locationInView:self.view];
     NSIndexPath *index = [self.tableView indexPathForRowAtPoint:point];
-    Todo *aTodo = [self.outstandingItems objectAtIndex:index.row];
-    [self.outstandingItems removeObjectAtIndex:index.row];
-    [self.completedItems insertObject:aTodo atIndex:0];
-    [aTodo setIsCompleted:YES];
-    [self.tableView reloadData];
-    
+    Todo *aTodo = [self.fetchedResultsController objectAtIndexPath:index];
+    aTodo.completed = true;
+    [theCoreDataStack saveContext];
 }
 
 
 #pragma mark - Segmented Control
 
+
+// I guess we would want to change the sort descriptors that we are using here, perhaps update
+
+
 - (IBAction)orderAccordingToControl:(UISegmentedControl *)sender {
     if (sender.selectedSegmentIndex == 0) {
-        [self orderByPriority];
+      //fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"priority" ascending:YES]];
     } else if (sender.selectedSegmentIndex == 1) {
-        [self orderByDeadline];
+      //  fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deadline" ascending:YES]];
     }
 }
 
-- (void)orderByPriority {
-    NSArray *sortedArray1 = [self.outstandingItems sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
-        NSComparisonResult result = todo1.priority > todo2.priority;
-        return result;
-    }];
-    
-    self.outstandingItems = [[NSMutableArray alloc] initWithArray:sortedArray1];
-    
-    [self.tableView reloadData];
-}
-
-- (void)orderByDeadline {
-    NSArray *sortedArray1 = [self.outstandingItems sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
-        NSComparisonResult result = todo1.deadline > todo2.deadline;
-        return result;
-    }];
-    
-    self.outstandingItems = [[NSMutableArray alloc] initWithArray:sortedArray1];
-    
-    [self.tableView reloadData];
-}
-
-
-#pragma mark - TodoCreationProtocal
-
-- (void)transferTodo:(Todo *)aTodo {
-    [self.outstandingItems insertObject:aTodo atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-
-}
 
 @end

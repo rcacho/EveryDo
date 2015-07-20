@@ -8,16 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "Todo.h"
-
-
-@protocol TodoCreationProtocol <NSObject>
-
-- (void)transferTodo:(Todo *)aTodo;
-
-@end
+#import "CoreDataStack.h"
 
 @interface NewTodoViewController : UIViewController
-
-@property id<TodoCreationProtocol> todoDelegate;
 
 @end

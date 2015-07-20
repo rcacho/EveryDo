@@ -36,12 +36,12 @@
 - (void)configureView {
     // Update the user interface for the detail item.
     if (self.detailItem) {
-        self.todoPriorityLabel.text = [NSString stringWithFormat:@"%ld",[self.detailItem.priority integerValue]];
+        self.todoPriorityLabel.text = [NSString stringWithFormat:@"%hd",self.detailItem.priority];
         self.todoTitleLabel.text = self.detailItem.title;
-        self.todoDate.text = [NSDateFormatter localizedStringFromDate:self.detailItem.deadline
+        self.todoDate.text = [NSDateFormatter localizedStringFromDate:[NSDate dateWithTimeIntervalSince1970:self.detailItem.deadline ]
                                                             dateStyle:NSDateFormatterShortStyle
                                                             timeStyle:NSDateFormatterShortStyle];
-        if (self.detailItem.isCompleted) {
+        if (self.detailItem.completed) {
             NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:(self.detailItem.todoDescription)];
             [attributeString addAttribute:NSStrikethroughStyleAttributeName
                                     value:@2

@@ -1,25 +1,32 @@
 //
 //  Todo.m
-//  EveryDo
+//  
 //
-//  Created by ricardo antonio cacho on 2015-07-15.
-//  Copyright (c) 2015 ricardo antonio cacho. All rights reserved.
+//  Created by ricardo antonio cacho on 2015-07-20.
+//
 //
 
 #import "Todo.h"
 
+
 @implementation Todo
 
+@dynamic title;
 
-- (instancetype)initWithTitle:(NSString *)title andDescription:(NSString *)todoDescription andPriority:(NSNumber *)priority andDeadline:(NSDate *)deadline{
-    self = [super init];
-    if (self) {
-        _title = title;
-        _todoDescription = todoDescription;
-        _priority = priority;
-        _deadline = deadline;
+@dynamic todoDescription;
+
+@dynamic priority;
+
+@dynamic deadline;
+
+@dynamic completed;
+
+- (NSString *)sectionName {
+    if (self.completed) {
+        return @"Completed Tasks:";
+    } else {
+        return @"Outstanding Tasks:";
     }
-    return self;
 }
 
 

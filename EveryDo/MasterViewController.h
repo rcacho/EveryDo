@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "NewTodoViewController.h"
+#import "CoreDataStack.h"
 
 
-@interface MasterViewController : UITableViewController <TodoCreationProtocol>
+@interface MasterViewController : UITableViewController
 
 
 @end
