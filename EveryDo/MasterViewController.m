@@ -95,7 +95,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-
+        [self.tableEntries delete:self.tableEntries.todoDictionary.allValues[indexPath.section][indexPath.row]];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
 
     }

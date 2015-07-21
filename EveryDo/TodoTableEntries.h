@@ -21,6 +21,8 @@
 
 - (void)save;
 
+- (void)delete:(Todo *)aTodo;
+
 - (void)sortDictionaryByPriority;
 
 - (void)sortDictionaryByDeadline;

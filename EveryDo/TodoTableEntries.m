@@ -82,7 +82,12 @@
 - (void)save {
     CoreDataStack *theCoreDataStack = [CoreDataStack defaultStack];
     [theCoreDataStack saveContext];
-    
+}
+
+- (void)delete:(Todo *)aTodo {
+    CoreDataStack *theCoreDataStack = [CoreDataStack defaultStack];
+    [theCoreDataStack.managedObjectContext deleteObject:aTodo];
+    [theCoreDataStack saveContext];
 }
 
 #pragma mark - Rearrange Dictionary
