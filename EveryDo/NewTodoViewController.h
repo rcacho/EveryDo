@@ -10,6 +10,14 @@
 #import "Todo.h"
 #import "CoreDataStack.h"
 
+@protocol TodoCreationProtocol <NSObject>
+
+- (void)saveTodo;
+
+@end
+
 @interface NewTodoViewController : UIViewController
+
+@property id<TodoCreationProtocol>delegate;
 
 @end

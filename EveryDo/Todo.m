@@ -30,4 +30,13 @@
 }
 
 
+- (NSString *)propertyForString:(NSString *)string {
+    if (self.completed) {
+        return @"Completed Tasks:";
+    } else {
+        return @"Outstanding Tasks:";
+    }
+}
+
+
 @end

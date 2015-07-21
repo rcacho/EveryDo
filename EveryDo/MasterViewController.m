@@ -10,14 +10,15 @@
 #import "DetailViewController.h"
 #import "Todo.h"
 #import "TodoTableViewCell.h"
+#import "TodoTableEntries.h"
 
-@interface MasterViewController () <UITableViewDelegate, NSFetchedResultsControllerDelegate>
-
-@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+@interface MasterViewController () <UITableViewDelegate, TodoCreationProtocol>
 
 @property (strong, nonatomic) IBOutlet UISwipeGestureRecognizer *swipeGestureRecognizer;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *todoOrderSegmentedControl;
+
+@property TodoTableEntries *tableEntries;
 
 @property Todo *selectedTodo;
 
@@ -38,7 +39,9 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
-      [self.fetchedResultsController performFetch:nil];
+    self.tableEntries = [[TodoTableEntries alloc] init];
+    [self.tableEntries setViewController:self];
+     
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,41 +58,34 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         [[segue destinationViewController] setDetailItem:self.selectedTodo];
+    } else if ([[segue identifier] isEqualToString:@"createNewTodo"]) {
+        [[segue destinationViewController] setDelegate:self];
     }
 }
 
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.fetchedResultsController.sections.count;
+    return self.tableEntries.todoDictionary.allKeys.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.fetchedResultsController.sections[section] numberOfObjects];
+    return [self.tableEntries.todoDictionary.allValues[section] count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [self.fetchedResultsController.sections[section] name];
+    return [self.tableEntries getTitleForHeaderInSection:section];
 }
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-        return [self.fetchedResultsController sectionIndexTitles];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
-}
-
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TodoTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"TodoCell"];
-    [cell setATodo:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+    [cell setATodo:self.tableEntries.todoDictionary.allValues[indexPath.section][indexPath.row]];
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.selectedTodo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    self.selectedTodo = self.tableEntries.todoDictionary.allValues[indexPath.section][indexPath.row];
      [self performSegueWithIdentifier:@"showDetail" sender:self];
 }
 
@@ -121,73 +117,23 @@
     [self.tableView endUpdates];
 }
 
-#pragma mark - CoreData
+#pragma mark - TodoCreationProtocal
 
-- (NSFetchedResultsController *)fetchedResultsController {
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
-    }
-    CoreDataStack *theCoreDateStack = [CoreDataStack defaultStack];
-    NSFetchRequest *fetchRequest = [self entryListFetchRequest];
-    
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:theCoreDateStack.managedObjectContext sectionNameKeyPath:@"completed" cacheName:@"Todo"];
-    _fetchedResultsController.delegate = self;
-    
-    return _fetchedResultsController;
+- (void)saveTodo {
+    // refresh the list....
+    [self.tableEntries save];
 }
-
-- (NSFetchRequest *)entryListFetchRequest {
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Todo"];
-    // note that we have to do something about the fact that the user can chage the orde of the tasks
-    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"completed" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]];
-    return fetchRequest;
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case NSFetchedResultsChangeMove:
-            break;
-        case NSFetchedResultsChangeUpdate:
-            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-    }
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation: UITableViewRowAnimationAutomatic];
-            break;
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case NSFetchedResultsChangeMove:
-            break;
-        case NSFetchedResultsChangeUpdate:
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-    }
-}
-
-
 
 #pragma mark - SwipeGestureRecognizer
 
 - (IBAction)swipeToSetAsCompleted:(UISwipeGestureRecognizer *)sender {
-    CoreDataStack *theCoreDataStack = [CoreDataStack defaultStack];
     CGPoint point = [self.swipeGestureRecognizer locationInView:self.view];
-    NSIndexPath *index = [self.tableView indexPathForRowAtPoint:point];
-    Todo *aTodo = [self.fetchedResultsController objectAtIndexPath:index];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
+    Todo *aTodo = self.tableEntries.todoDictionary.allValues[indexPath.section][indexPath.row];
     aTodo.completed = true;
-    [theCoreDataStack saveContext];
+    
+    [self.tableEntries save];
 }
-
 
 #pragma mark - Segmented Control
 

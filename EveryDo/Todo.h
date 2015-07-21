@@ -24,4 +24,6 @@
 
 @property (nonatomic, readonly) NSString *sectionName;
 
+- (NSString *)propertyForString:(NSString *)string;
+
 @end
