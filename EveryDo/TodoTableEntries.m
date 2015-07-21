@@ -120,4 +120,34 @@
     return NO;
 }
 
+- (void)sortDictionaryByPriority {
+    NSArray *tasksToBeCompleted = [self.todoDictionary.allValues[0] sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
+        NSComparisonResult result = todo1.priority > todo2.priority;
+        return result;
+    }];
+    NSArray *tasksCompleted = [self.todoDictionary.allValues[1] sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
+        NSComparisonResult result = todo1.priority > todo2.priority;
+        return result;
+    }];
+    
+    self.todoDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:tasksToBeCompleted,@"Tasks To Be Completed",
+                           tasksCompleted, @"Tasks Completed", nil];
+    [self.viewController.tableView reloadData];
+}
+
+- (void)sortDictionaryByDeadline {
+    NSArray *tasksToBeCompleted = [self.todoDictionary.allValues[0] sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
+        NSComparisonResult result = todo1.deadline > todo2.deadline;
+        return result;
+    }];
+    NSArray *tasksCompleted = [self.todoDictionary.allValues[1] sortedArrayUsingComparator: ^(Todo *todo1, Todo *todo2) {
+        NSComparisonResult result = todo1.deadline > todo2.deadline;
+        return result;
+    }];
+    
+    self.todoDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:tasksToBeCompleted,@"Tasks To Be Completed",
+                           tasksCompleted, @"Tasks Completed", nil];
+    [self.viewController.tableView reloadData];
+}
+
 @end

@@ -21,4 +21,9 @@
 
 - (void)save;
 
+- (void)sortDictionaryByPriority;
+
+- (void)sortDictionaryByDeadline;
+    
+
 @end

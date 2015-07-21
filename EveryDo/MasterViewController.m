@@ -143,9 +143,9 @@
 
 - (IBAction)orderAccordingToControl:(UISegmentedControl *)sender {
     if (sender.selectedSegmentIndex == 0) {
-      //fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"priority" ascending:YES]];
+        [self.tableEntries sortDictionaryByPriority];
     } else if (sender.selectedSegmentIndex == 1) {
-      //  fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deadline" ascending:YES]];
+        [self.tableEntries sortDictionaryByDeadline];
     }
 }
 
